@@ -107,6 +107,9 @@
   if (!prefs.scale) prefs.scale = 1;
   if (!prefs.size) prefs.size = {};
   if (!prefs.hidden) prefs.hidden = {};
+  var VIZ = [['barra', 'Barra'], ['anillo', 'Anillo'], ['medidor', 'Medidor'], ['segmentos', 'Segmentos'], ['senal', 'Señal'], ['puntos', 'Puntos'], ['nivel', 'Nivel']];
+  function vizLabel(id) { var i; for (i = 0; i < VIZ.length; i++) { if (VIZ[i][0] === id) return VIZ[i][1]; } return null; }
+  if (!vizLabel(prefs.viz)) prefs.viz = 'barra';
   if (!marks) {
     marks = [{ id: 'm1', n: 'GitHub', u: 'https://github.com' }, { id: 'm2', n: 'Panel de proyectos', u: 'proyectos/' }];
     save('marks', marks);
@@ -190,6 +193,8 @@
     s += '.modes .m.on, .seg .sg.on { border-color: ' + A + '; background-color: ' + rgba(A, 0.16) + '; color: ' + AX + '; }';
     s += '.flash { border-color: ' + A + '; background-color: ' + rgba(A, 0.16) + '; color: ' + AX + '; }';
     s += '.k-blue .kn { color: ' + AT + '; } .k-blue .kbar i { background-color: ' + A + '; }';
+    s += '.k-blue .vf { stroke: ' + A + '; } .k-blue .kv i.lit { background-color: ' + A + '; } .k-blue .vniv { background-color: ' + rgba(A, 0.2) + '; }';
+    s += '.vtile.on { border-color: ' + A + '; }';
     s += '.c-azul { color: ' + AT + '; border-color: ' + rgba(A, 0.45) + '; background-color: ' + rgba(A, 0.14) + '; }';
     s += '.tg .t.on i { border-color: ' + A + '; background-color: ' + A + '; }';
     s += '#editbar { border-color: ' + A + '; background-color: ' + rgba(A, 0.08) + '; }';
@@ -203,8 +208,9 @@
     var st = $('theme-css');
     var css = themeCss();
     if (st.styleSheet) st.styleSheet.cssText = css; else { clearNode(st); st.appendChild(document.createTextNode(css)); }
-    b.className = (light ? 'light' : '') + (editing ? ' editing' : '');
+    b.className = (light ? 'light' : '') + (editing ? ' editing' : '') + ' viz-' + prefs.viz;
     b.style.zoom = prefs.scale;
+    $('btn-viz').innerHTML = 'Estilo: ' + vizLabel(prefs.viz);
     $('p-arc').setAttribute('stroke', A);
     $('p-track').setAttribute('stroke', light ? '#e8eaee' : '#0f1115');
     $('btn-edit').innerHTML = editing ? 'Listo' : 'Editar diseño';
@@ -406,6 +412,16 @@
         })(k);
       }
     }
+    var vg = $('vz-grid'); clearNode(vg);
+    for (i = 0; i < VIZ.length; i++) {
+      (function (v) {
+        var t = mk('div', 'vtile k-blue' + (prefs.viz === v[0] ? ' on' : '')), pre = mk('div', 'vpre'), kv = mk('div', 'kv');
+        kv.innerHTML = vizHtml(v[0], 65); pre.appendChild(kv);
+        t.appendChild(pre); t.appendChild(mk('div', 'vlab', v[1]));
+        on(t, 'click', function () { setViz(v[0]); });
+        vg.appendChild(t);
+      })(VIZ[i]);
+    }
     ord = curOrder();
     for (i = 0; i < ord.length; i++) {
       (function (id) {
@@ -450,11 +466,51 @@
   });
 
   /* ---------- indicadores ---------- */
+  /* Dibuja el indicador en la forma elegida. pct va de 0 a 100. Los colores los pone el CSS según k-red, k-amber, k-green o k-blue. */
+  function vizHtml(st, pct) {
+    pct = Math.max(0, Math.min(100, pct || 0));
+    var r = Math.round(pct), s = '', i, lit, C;
+    if (st === 'anillo') {
+      C = 2 * Math.PI * 26;
+      s = '<svg width="68" height="68" viewBox="0 0 68 68"><circle class="vt" cx="34" cy="34" r="26" fill="none" stroke-width="7"/>' +
+        (pct > 0 ? '<circle class="vf" cx="34" cy="34" r="26" fill="none" stroke-width="7" stroke-linecap="round" stroke-dasharray="' + (C * pct / 100).toFixed(1) + ' ' + C.toFixed(1) + '" transform="rotate(-90 34 34)"/>' : '') +
+        '<text class="vx" x="34" y="39" text-anchor="middle">' + r + '%</text></svg>';
+    } else if (st === 'medidor') {
+      C = Math.PI * 38;
+      s = '<svg width="96" height="58" viewBox="0 0 96 58"><path class="vt" d="M10 50 A38 38 0 0 1 86 50" fill="none" stroke-width="8" stroke-linecap="round"/>' +
+        (pct > 0 ? '<path class="vf" d="M10 50 A38 38 0 0 1 86 50" fill="none" stroke-width="8" stroke-linecap="round" stroke-dasharray="' + (C * pct / 100).toFixed(1) + ' ' + C.toFixed(1) + '"/>' : '') +
+        '<text class="vx vx2" x="48" y="48" text-anchor="middle">' + r + '%</text></svg>';
+    } else if (st === 'segmentos') {
+      lit = Math.ceil(pct / 10);
+      s = '<div class="vseg">'; for (i = 0; i < 10; i++) { s += '<i' + (i < lit ? ' class="lit"' : '') + '></i>'; } s += '</div>';
+    } else if (st === 'senal') {
+      lit = Math.ceil(pct / 12.5);
+      s = '<div class="vsig">'; for (i = 0; i < 8; i++) { s += '<i' + (i < lit ? ' class="lit"' : '') + ' style="height:' + (8 + i * 4) + 'px"></i>'; } s += '</div>';
+    } else if (st === 'puntos') {
+      lit = Math.ceil(pct / 5);
+      s = '<div class="vdot">'; for (i = 0; i < 20; i++) { s += '<i' + (i < lit ? ' class="lit"' : '') + '></i>' + (i === 9 ? '<br>' : ''); } s += '</div>';
+    } else if (st === 'nivel') {
+      s = '<div class="vniv" style="height:' + r + '%"></div>';
+    } else {
+      s = '<div class="kbar"><i style="width:' + r + '%"></i></div>';
+    }
+    return s;
+  }
+  function setViz(id) {
+    prefs.viz = id; savePrefs(); applyTheme(); renderKpis();
+    if (curView) rerenderView();
+    renderCustom();
+  }
+  on($('btn-viz'), 'click', function () {
+    var i, nx = 0;
+    for (i = 0; i < VIZ.length; i++) { if (VIZ[i][0] === prefs.viz) nx = (i + 1) % VIZ.length; }
+    setViz(VIZ[nx][0]);
+  });
   function setKpi(n, cls, num, cap_, pct) {
     var card = cards[n.card];
     $(n.n).innerHTML = num;
     $(n.c).innerHTML = cap_;
-    $(n.b).style.width = Math.max(0, Math.min(100, pct)) + '%';
+    $(n.b).innerHTML = vizHtml(prefs.viz, pct);
     if (cls) card.className = card.className.replace(/ k-(red|amber|green|blue)/g, '') + ' ' + cls;
   }
   function renderKpis() {
@@ -961,7 +1017,7 @@
   function vStat(label, num, capTxt, cls, pct) {
     var c = mk('div', 'card kpi s3 ' + (cls || 'k-blue')), b = mk('div', 'cb');
     b.appendChild(mk('div', 'kl', label)); b.appendChild(mk('div', 'kn', '' + num)); b.appendChild(mk('div', 'kc', capTxt));
-    var bar = mk('div', 'kbar'), i = mk('i'); i.style.width = Math.max(0, Math.min(100, pct || 0)) + '%'; bar.appendChild(i); b.appendChild(bar);
+    var kv = mk('div', 'kv'); kv.innerHTML = vizHtml(prefs.viz, pct); b.appendChild(kv);
     c.appendChild(b);
     return c;
   }

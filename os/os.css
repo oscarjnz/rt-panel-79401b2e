@@ -389,3 +389,51 @@ textarea.big { height: 430px; }
 .light .ur .ft { color: #667085; }
 .light .stat { color: #9a6700; background-color: #fff4d6; border-color: #f1d894; }
 .light .ur .chk { border-color: #b8bec9; }
+
+/* ---------- estilos de indicador (7 formas, se elige en Personalizar o con el botón Estilo) ---------- */
+.kpi { position: relative; }
+.kpi .cb { position: relative; z-index: 1; }
+.kv { margin-top: 12px; }
+.kv .kbar { margin-top: 0; }
+.kv svg { display: block; }
+.kv .vt { stroke: #0f1115; }
+.kv .vx { fill: #e6e8ee; font-size: 14px; font-weight: 700; }
+.kv .vx2 { font-size: 15px; }
+.vseg, .vsig, .vdot { font-size: 0; line-height: 0; }
+.vseg { height: 10px; overflow: hidden; }
+.vseg i { float: left; width: 9%; margin-right: 1%; height: 10px; border-radius: 2px; }
+.vsig { height: 38px; }
+.vsig i { display: inline-block; width: 10%; margin-right: 2.5%; vertical-align: bottom; border-radius: 2px; }
+.vdot i { display: inline-block; width: 9px; height: 9px; margin: 0 5px 6px 0; border-radius: 5px; }
+.kv .vseg i, .kv .vsig i, .kv .vdot i { background-color: #0f1115; }
+.vniv { position: absolute; left: 0; right: 0; bottom: 0; z-index: -1; -webkit-transition: height 0.3s; transition: height 0.3s; }
+body.viz-anillo .kpi .kv, body.viz-medidor .kpi .kv { position: absolute; right: 16px; top: 34px; margin-top: 0; }
+body.viz-anillo .kpi .kn, body.viz-anillo .kpi .kc { margin-right: 78px; }
+body.viz-medidor .kpi .kn, body.viz-medidor .kpi .kc { margin-right: 104px; }
+body.viz-nivel .kpi { overflow: hidden; }
+body.viz-nivel .kpi .kv { margin-top: 0; }
+
+/* selector de estilo en Personalizar */
+.vgrid { margin-right: -8px; }
+.vtile { display: inline-block; width: 31%; margin: 0 2% 8px 0; border: 1px solid #2c313d; border-radius: 8px; background-color: #171a21; cursor: pointer; overflow: hidden; vertical-align: top; }
+.vtile.on { border-color: #3b82f6; }
+.vtile .vpre { position: relative; z-index: 0; display: -ms-flexbox; display: flex; -ms-flex-align: center; align-items: center; height: 84px; padding: 0 14px; }
+.vtile .vpre .kv { -ms-flex: 1 1 auto; flex: 1 1 auto; }
+.vtile .vpre .kv { margin: 0; }
+.vtile .vpre svg { margin: 0 auto; }
+.vtile .vpre .vsig { height: 38px; }
+.vtile .vlab { padding: 6px 10px; border-top: 1px solid #252932; font-size: 12px; font-weight: 700; color: #aeb3c0; text-align: center; }
+.vtile.on .vlab { color: #e6e8ee; }
+
+.light .kv .vt { stroke: #e8eaee; }
+.light .kv .vx { fill: #1d2129; }
+.light .kv .vseg i, .light .kv .vsig i, .light .kv .vdot i { background-color: #e8eaee; }
+/* colores por estado (van al final para ganar a las reglas del tema claro) */
+.k-red .vf { stroke: #e5484d; } .k-red .kv i.lit { background-color: #e5484d; } .k-red .vniv { background-color: rgba(229, 72, 77, 0.2); }
+.k-amber .vf { stroke: #f0b43c; } .k-amber .kv i.lit { background-color: #f0b43c; } .k-amber .vniv { background-color: rgba(240, 180, 60, 0.2); }
+.k-green .vf { stroke: #34c46a; } .k-green .kv i.lit { background-color: #34c46a; } .k-green .vniv { background-color: rgba(52, 196, 106, 0.2); }
+.k-blue .vf { stroke: #3b82f6; } .k-blue .kv i.lit { background-color: #3b82f6; } .k-blue .vniv { background-color: rgba(59, 130, 246, 0.2); }
+.light .vtile { background-color: #ffffff; border-color: #d5d9e0; }
+.light .vtile .vlab { border-top-color: #eceef2; color: #667085; }
+.light .vtile.on .vlab { color: #1d2129; }
+@media (max-width: 599px) { .vtile { width: 47%; } }
