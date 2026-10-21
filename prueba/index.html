@@ -41,6 +41,7 @@ p{margin:0 0 16px 0;color:#a5a8b2;line-height:1.5;font-size:14px;}
     { n: 'GitHub Pages (este sitio)', u: '../robots.txt', d: 'Referencia: el propio sitio, que ya sabemos que carga' },
     { n: 'jsDelivr (CDN)', u: 'https://cdn.jsdelivr.net/npm/acorn@8.11.3/package.json', d: 'Archivo público de un CDN' },
     { n: 'Divisas (open.er-api)', u: 'https://open.er-api.com/v6/latest/USD', d: 'Segunda fuente de divisas' },
+    { n: 'Cloudflare (Active Calendar)', u: 'https://activecalendar.site/', d: 'Sitio alojado en Cloudflare. Toca abrir directo: si carga, la tablet puede hablar con un Worker de Cloudflare.', link: true },
     { n: 'Wikipedia (API)', u: 'https://es.wikipedia.org/api/rest_v1/page/summary/Santo_Domingo', d: 'Resumen de un artículo' }
   ];
   var out = document.getElementById('out');
@@ -51,6 +52,7 @@ p{margin:0 0 16px 0;color:#a5a8b2;line-height:1.5;font-size:14px;}
       var row = el('div', 'row'), st = el('span', 'st', 'PROBANDO'), nm = el('div', 'nm', t.n), ds = el('div', 'ds', t.d), op = el('div', 'op');
       var a = el('a', null, 'abrir directo'); a.href = t.u; op.appendChild(a);
       row.appendChild(st); row.appendChild(nm); row.appendChild(ds); row.appendChild(op); out.appendChild(row);
+      if (t.link) { st.innerHTML = 'ABRIR DIRECTO'; return; }
       var t0 = new Date().getTime(), x;
       try {
         x = new XMLHttpRequest();
