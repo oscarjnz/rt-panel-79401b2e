@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conexiones</title>
+<style>
+html,body{margin:0;padding:0;background:#0d0e12;color:#f3f4f7;font-family:"Segoe UI",Arial,sans-serif;font-size:15px;}
+.wrap{max-width:860px;margin:0 auto;padding:20px 24px 40px 24px;}
+a{color:#7db8f2;text-decoration:none;}
+.back{display:inline-block;margin-bottom:12px;padding:6px 14px;border:1px solid #272b36;border-radius:18px;background:#171a21;font-size:14px;}
+h1{margin:0 0 6px 0;font-size:26px;font-weight:600;}
+p{margin:0 0 16px 0;color:#a5a8b2;line-height:1.5;font-size:14px;}
+.row{margin-bottom:8px;padding:12px 16px;border-radius:16px;border:1px solid #272b36;background:#171a21;overflow:hidden;}
+.row .st{float:right;min-width:120px;margin-left:10px;padding:5px 12px;border-radius:14px;text-align:center;font-size:12px;font-weight:800;letter-spacing:1px;background:#6b7684;color:#fff;}
+.row .st.ok{background:#3ccf6e;color:#05230f;}
+.row .st.no{background:#e5484d;color:#fff;}
+.row .nm{font-weight:600;font-size:16px;}
+.row .ds{margin-top:3px;font-size:12px;color:#a5a8b2;word-wrap:break-word;}
+.row .op{margin-top:6px;font-size:12px;}
+.btn{display:inline-block;height:44px;line-height:42px;padding:0 22px;margin:6px 0 16px 0;border-radius:22px;border:1px solid #4a9eed;background:#3a82dc;color:#fff;font-size:15px;font-weight:600;cursor:pointer;}
+.note{margin-top:18px;font-size:13px;color:#a5a8b2;line-height:1.5;}
+</style></head><body><div class="wrap">
+<a class="back" href="../">&#8249; Inicio</a>
+<h1>Probar conexiones</h1>
+<p>Comprueba desde esta tablet qué servicios externos responden. Cada prueba pide un dato real a la API desde la propia página, que es lo que haría un widget de clima, divisas o criptomonedas.</p>
+<button class="btn" id="go" type="button">Probar de nuevo</button>
+<div id="out"></div>
+<div class="note">
+<b>Cómo leer el resultado.</b> OK: la API respondió y el widget puede usarla. ERROR: no se pudo leer la respuesta. Como Internet Explorer no distingue entre un fallo de cifrado (TLS) y un permiso del sitio (CORS), usa el enlace "abrir directo" de esa fila: si la dirección abre y muestra texto, el cifrado funciona y el problema sería el permiso del sitio; si IE muestra un error de seguridad o de conexión, es el cifrado.
+</div>
+</div>
+<script>
+(function () {
+  var TESTS = [
+    { n: 'Clima (Open-Meteo)', u: 'https://api.open-meteo.com/v1/forecast?latitude=18.47&longitude=-69.9&current_weather=true', d: 'Temperatura actual de Santo Domingo' },
+    { n: 'Divisas (Frankfurter)', u: 'https://api.frankfurter.dev/v1/latest?base=USD&symbols=EUR', d: 'Cambio de dólar a euro' },
+    { n: 'Criptomonedas (CoinGecko)', u: 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd', d: 'Precio de Bitcoin en dólares' },
+    { n: 'GitHub (API)', u: 'https://api.github.com/zen', d: 'Frase de prueba de la API de GitHub' },
+    { n: 'GitHub Pages (este sitio)', u: '../robots.txt', d: 'Referencia: el propio sitio, que ya sabemos que carga' },
+    { n: 'jsDelivr (CDN)', u: 'https://cdn.jsdelivr.net/npm/acorn@8.11.3/package.json', d: 'Archivo público de un CDN' },
+    { n: 'Divisas (open.er-api)', u: 'https://open.er-api.com/v6/latest/USD', d: 'Segunda fuente de divisas' },
+    { n: 'Wikipedia (API)', u: 'https://es.wikipedia.org/api/rest_v1/page/summary/Santo_Domingo', d: 'Resumen de un artículo' }
+  ];
+  var out = document.getElementById('out');
+  function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x) e.appendChild(document.createTextNode(x)); return e; }
+  function run() {
+    out.innerHTML = '';
+    for (var i = 0; i < TESTS.length; i++) { (function (t) {
+      var row = el('div', 'row'), st = el('span', 'st', 'PROBANDO'), nm = el('div', 'nm', t.n), ds = el('div', 'ds', t.d), op = el('div', 'op');
+      var a = el('a', null, 'abrir directo'); a.href = t.u; op.appendChild(a);
+      row.appendChild(st); row.appendChild(nm); row.appendChild(ds); row.appendChild(op); out.appendChild(row);
+      var t0 = new Date().getTime(), x;
+      try {
+        x = new XMLHttpRequest();
+        x.open('GET', t.u, true);
+        x.timeout = 20000;
+        x.onload = function () {
+          var ms = new Date().getTime() - t0;
+          if (x.status >= 200 && x.status < 300) { st.className = 'st ok'; st.innerHTML = 'OK · ' + ms + ' ms'; ds.innerHTML = ''; ds.appendChild(document.createTextNode((x.responseText || '').slice(0, 90))); }
+          else { st.className = 'st no'; st.innerHTML = 'HTTP ' + x.status; }
+        };
+        x.onerror = function () { st.className = 'st no'; st.innerHTML = 'ERROR'; };
+        x.ontimeout = function () { st.className = 'st no'; st.innerHTML = 'SIN RESPUESTA'; };
+        x.send(null);
+      } catch (e) { st.className = 'st no'; st.innerHTML = 'ERROR'; }
+    })(TESTS[i]); }
+  }
+  document.getElementById('go').onclick = run;
+  run();
+})();
+</script></body></html>

@@ -1,130 +1,158 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta http-equiv="refresh" content="300">
-<meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Estado de proyectos</title><style>
-html,body{margin:0;padding:0;background:#12161c;color:#e8edf3;font-family:"Segoe UI",Arial,sans-serif;}
-.wrap{padding:14px 18px 40px 18px;}
-h1{font-size:26px;margin:0;font-weight:600;}
-.head{overflow:hidden;margin-bottom:10px;}
-.head .l{float:left;}.head .r{float:right;text-align:right;}
-#clock{font-size:34px;font-weight:300;}
-#age{font-size:14px;color:#9aa7b5;}#age.stale{color:#e5484d;font-weight:bold;}
-#stalewarn{display:none;background:#e5484d;color:#fff;padding:8px 12px;margin-bottom:10px;font-size:16px;}
-.sum{margin-bottom:10px;}
-.sum span{display:inline-block;margin-right:8px;margin-bottom:6px;padding:8px 14px;font-size:16px;font-weight:bold;}
-.s-rojo{background:#e5484d;color:#fff;}.s-ambar{background:#f5a524;color:#1a1200;}.s-verde{background:#3fb950;color:#06200c;}.s-gris{background:#6b7684;color:#fff;}
-.bar{margin-bottom:12px;font-size:14px;color:#9aa7b5;}
-.btn{display:inline-block;margin:0 6px 6px 0;padding:8px 14px;background:#1c232d;color:#e8edf3;border:2px solid #2d3745;text-decoration:none;font-size:15px;}
-.btn.on{background:#e8edf3;color:#12161c;border-color:#e8edf3;font-weight:bold;}
-.card{display:inline-block;vertical-align:top;width:32%;min-width:290px;margin:0 1% 14px 0;padding:11px 14px 11px 14px;background:#1c232d;border-left:10px solid #6b7684;box-sizing:border-box;}
-.e-rojo{border-left-color:#e5484d;}.e-ambar{border-left-color:#f5a524;}.e-verde{border-left-color:#3fb950;}.e-gris{border-left-color:#6b7684;}
-.chip{display:inline-block;padding:2px 8px;font-size:13px;font-weight:bold;letter-spacing:1px;}
-.e-rojo .chip{background:#e5484d;color:#fff;}.e-ambar .chip{background:#f5a524;color:#1a1200;}.e-verde .chip{background:#3fb950;color:#06200c;}.e-gris .chip{background:#6b7684;color:#fff;}
-.usotag{float:right;font-size:12px;color:#9aa7b5;text-transform:uppercase;padding-top:3px;}
-.name{font-size:20px;font-weight:600;margin:8px 0 3px 0;word-wrap:break-word;}
-.desc{font-size:13px;color:#9aa7b5;margin-bottom:8px;line-height:1.35;}
-ul.facts{margin:0 0 8px 0;padding-left:18px;font-size:14px;color:#dbe3ec;line-height:1.4;}
-ul.facts li{margin-bottom:2px;}
-.nota{font-size:13px;color:#f0d9a8;border-top:1px solid #2d3745;padding-top:6px;margin-bottom:8px;line-height:1.35;}
-.meta{font-size:12px;color:#9aa7b5;border-top:1px solid #2d3745;padding-top:6px;line-height:1.5;}
-.foot{margin-top:16px;font-size:12px;color:#6b7684;}
-</style></head><body><div class="wrap">
-<div class="head"><div class="l"><h1>Estado de proyectos</h1><div id="gen" data-ts="1792610173604"><span id="age">generado el 21 oct a las 15:16</span></div></div><div class="r"><div id="clock"></div></div></div>
-<div id="stalewarn">Los datos tienen más de 12 horas: el PC no ha regenerado el panel.</div>
-<div class="sum"><span class="s-rojo">3 FALLO</span><span class="s-ambar">5 PENDIENTE</span><span class="s-verde">8 AL DÍA</span><span class="s-gris">2 DORMIDO</span></div>
-<div class="bar">Uso: <a class="btn on" data-g="uso" data-v="todos" href="#uso=todos">Todos</a><a class="btn" data-g="uso" data-v="propio" href="#uso=propio">Míos</a><a class="btn" data-g="uso" data-v="terceros" href="#uso=terceros">De terceros</a>
- &nbsp; Estado: <a class="btn on" data-g="est" data-v="todos" href="#est=todos">Todos</a><a class="btn" data-g="est" data-v="rojo" href="#est=rojo">Fallo</a><a class="btn" data-g="est" data-v="ambar" href="#est=ambar">Pendiente</a><a class="btn" data-g="est" data-v="verde" href="#est=verde">Al día</a><a class="btn" data-g="est" data-v="gris" href="#est=gris">Dormido</a>
- &nbsp; mostrando <b id="shown">18</b> de 18</div>
-<div id="cards">
-<div class="card e-rojo" data-uso="propio" data-est="rojo"><span class="chip">FALLO</span><span class="usotag">propio</span><div class="name">NutriFlow</div><div class="desc">Aplicación web de nutrición y hábitos, instalable como PWA. Es la base de la que depende la app móvil.</div><ul class="facts"><li>Comparte backend con NutriFlow Mobile, que hoy está en fallo.</li><li>Actions en orden: CI, corrido el 25 sep.</li><li>Producción responde 200 en 2449 ms.</li><li>Desplegado el 25 sep en producción, igual al último commit.</li><li>Último commit el 25 sep.</li></ul><div class="nota">Usa el mismo Supabase que la app móvil, restringido por cuota desde el 25 sep. El keep-alive seguía fallando el 20 oct.</div><div class="meta">Next.js 15 · Supabase · Clerk · Vercel<br>nutriflow-sigma.vercel.app · GitHub · último commit <span class="rel" data-ts="1790312870000"></span></div></div>
-<div class="card e-rojo" data-uso="propio" data-est="rojo"><span class="chip">FALLO</span><span class="usotag">propio</span><div class="name">NutriFlow Mobile</div><div class="desc">Cliente móvil de NutriFlow para Android, con APK de release firmado.</div><ul class="facts"><li>El último run de Actions (Supabase keep-alive) terminó en fallo el 19 oct.</li><li>3 archivos modificados sin commit, el más reciente del 4 sep.</li><li>Último commit el 25 sep.</li></ul><div class="nota">El keep-alive de Supabase recibe un 402: el proyecto está restringido por cuota (diagnosticado el 25 sep). Mientras siga así, la app no puede iniciar sesión.</div><div class="meta">Flutter · Supabase · Clerk<br>GitHub · último commit <span class="rel" data-ts="1790312870000"></span></div></div>
-<div class="card e-rojo" data-uso="propio" data-est="rojo"><span class="chip">FALLO</span><span class="usotag">propio</span><div class="name">S.S.S. Security Smart Services</div><div class="desc">Plataforma de monitoreo de seguridad de red: panel web, relay y agente de escaneo que corre en la máquina del cliente.</div><ul class="facts"><li>El chequeo de salud de la API reporta «degraded»: la base de datos no es alcanzable.</li><li>Producción responde 200 en 430 ms.</li><li>Desplegado el 27 ago en producción, igual al último commit.</li><li>Último commit el 27 ago.</li></ul><div class="nota">Causa conocida (verificada el 25 sep): el proyecto de Supabase está restringido por exceder la cuota de almacenamiento. Sigue sin responder el 21 oct.</div><div class="meta">React · Vite · TypeScript · Supabase · Vercel<br>securitysmartservices.site · GitHub · último commit <span class="rel" data-ts="1787851147000"></span></div></div>
-<div class="card e-ambar" data-uso="terceros" data-est="ambar"><span class="chip">PENDIENTE</span><span class="usotag">terceros · cliente</span><div class="name">Les Chez Casa de Moda</div><div class="desc">Tienda online de moda para una clienta. Se construye por fases: el frontend y las pruebas están al día; base de datos, despliegue y dominio vienen después.</div><ul class="facts"><li>7 archivos modificados sin commit, el más reciente del 21 oct.</li><li>Último commit el 21 oct.</li></ul><div class="meta">Next.js 16 · Tailwind 4 · Vitest · Playwright<br>GitHub · último commit <span class="rel" data-ts="1792594529000"></span></div></div>
-<div class="card e-ambar" data-uso="propio" data-est="ambar"><span class="chip">PENDIENTE</span><span class="usotag">propio</span><div class="name">Portafolio</div><div class="desc">Sitio personal con el CV en tres versiones regionales: LATAM, EE. UU. y UE.</div><ul class="facts"><li>1 archivo modificado sin commit, el más reciente del 24 sep.</li><li>Las 2 URL de producción responden 200.</li><li>Desplegado el 12 oct en producción, igual al último commit.</li><li>Último commit el 12 oct.</li></ul><div class="meta">React · Vite · Tailwind · Vercel<br>osnarci.online · GitHub · último commit <span class="rel" data-ts="1791819217000"></span></div></div>
-<div class="card e-ambar" data-uso="propio" data-est="ambar"><span class="chip">PENDIENTE</span><span class="usotag">propio</span><div class="name">Automatizaciones n8n</div><div class="desc">Flujos de n8n en un VPS, con un único script de despliegue y pruebas por workflow.</div><ul class="facts"><li>2 archivos modificados sin commit, el más reciente del 7 oct.</li><li>Último commit el 7 oct.</li></ul><div class="meta">n8n · Node<br>GitHub · último commit <span class="rel" data-ts="1791376426000"></span></div></div>
-<div class="card e-ambar" data-uso="propio" data-est="ambar"><span class="chip">PENDIENTE</span><span class="usotag">propio</span><div class="name">Active Calendar</div><div class="desc">Reúne las tareas de Blackboard de la semana por materia, con avance y recordatorios por correo y Telegram. Lo usan varios compañeros, cada uno con su cuenta.</div><ul class="facts"><li>La rama local no sigue a ninguna rama remota.</li><li>Actions en orden: Deploy Worker, corrido el 21 sep.</li><li>Producción responde 200 en 706 ms.</li><li>Se despliega a mano o por Actions con wrangler.</li><li>Último commit el 21 sep.</li></ul><div class="meta">Cloudflare Worker · Supabase<br>activecalendar.site · GitHub · último commit <span class="rel" data-ts="1790004262000"></span></div></div>
-<div class="card e-ambar" data-uso="propio" data-est="ambar"><span class="chip">PENDIENTE</span><span class="usotag">propio</span><div class="name">S.S.S. Scanner Agent</div><div class="desc">Agente de código abierto (MIT) que corre dentro de la red del cliente y ejecuta los escaneos que ordena el panel.</div><ul class="facts"><li>La rama local no sigue a ninguna rama remota.</li><li>Actions en orden: Build &amp; Release Agent Binaries, corrido el 9 ago.</li><li>Último commit el 9 ago.</li></ul><div class="meta">Node · TypeScript<br>GitHub · último commit <span class="rel" data-ts="1786250845000"></span></div></div>
-<div class="card e-verde" data-uso="propio" data-est="verde"><span class="chip">ACTIVO</span><span class="usotag">propio · UNIBE</span><div class="name">SEO de UNIBE</div><div class="desc">Optimización SEO (Rank Math) de los sitios de la universidad, una subcarpeta por sitio y un informe de entrega por cada uno.</div><ul class="facts"><li>Última nota de trabajo el 21 oct.</li><li>Sin repositorio: el avance se sigue por las notas de la carpeta.</li></ul><div class="meta">WordPress · Rank Math<br>local · última nota <span class="rel" data-ts="1792599352632"></span></div></div>
-<div class="card e-verde" data-uso="propio" data-est="verde"><span class="chip">AL DÍA</span><span class="usotag">propio</span><div class="name">MVP Radar</div><div class="desc">Análisis del MVP de ambas ligas de MLB con gráficos al estilo Baseball Savant. Primer informe del laboratorio de béisbol.</div><ul class="facts"><li>Producción responde 200 en 521 ms.</li><li>Desplegado el 9 oct en producción, igual al último commit.</li><li>Último commit el 9 oct.</li></ul><div class="meta">React · Vite · D3 · Vercel<br>mvp-radar.vercel.app · GitHub · último commit <span class="rel" data-ts="1791557232000"></span></div></div>
-<div class="card e-verde" data-uso="propio" data-est="verde"><span class="chip">AL DÍA</span><span class="usotag">propio</span><div class="name">Índice académico PUCMM</div><div class="desc">Calculadora de índice para estudiantes de Derecho: se elige el cuatrimestre cerrado y solo se escriben las notas.</div><ul class="facts"><li>Actions en orden: pages-build-deployment, corrido el 7 oct.</li><li>Las 2 URL de producción responden 200.</li><li>Desplegado el 7 oct en GitHub Pages, igual al último commit.</li><li>Último commit el 7 oct.</li></ul><div class="meta">Web estática<br>indice-academico.vercel.app · oscarjnz.github.io · GitHub · último commit <span class="rel" data-ts="1791425111000"></span></div></div>
-<div class="card e-verde" data-uso="propio" data-est="verde"><span class="chip">AL DÍA</span><span class="usotag">propio</span><div class="name">Pedribel Motors</div><div class="desc">Portal de catálogo de un negocio de motos, con carrusel y un backend que sirve las imágenes desde Cloudflare R2.</div><ul class="facts"><li>Actions en orden: pages-build-deployment, corrido el 25 sep.</li><li>Producción responde 200 en 632 ms.</li><li>Desplegado el 25 sep en GitHub Pages, igual al último commit.</li><li>Último commit el 25 sep.</li></ul><div class="meta">HTML estático · Express · Cloudflare R2<br>oscarjnz.github.io · GitHub · último commit <span class="rel" data-ts="1790312871000"></span></div></div>
-<div class="card e-verde" data-uso="propio" data-est="verde"><span class="chip">AL DÍA</span><span class="usotag">propio</span><div class="name">Secure Home AI</div><div class="desc">Repositorio original del producto S.H.S (Security Home Services). El desarrollo vigente vive en S.S.S.</div><ul class="facts"><li>Actions en orden: CI, corrido el 26 abr.</li><li>Desplegado el 25 sep en producción, igual al último commit.</li><li>Último commit el 25 sep.</li></ul><div class="meta">React 18 · Vite · Supabase<br>GitHub · último commit <span class="rel" data-ts="1790312871000"></span></div></div>
-<div class="card e-verde" data-uso="propio" data-est="verde"><span class="chip">ACTIVO</span><span class="usotag">propio</span><div class="name">Jarvis</div><div class="desc">Asistente personal local-first: el modelo corre en la propia máquina y los datos personales no salen a proveedores de IA.</div><ul class="facts"><li>Última nota de trabajo el 25 sep.</li><li>Sin repositorio: el avance se sigue por las notas de la carpeta.</li></ul><div class="meta">Ollama · local<br>local · última nota <span class="rel" data-ts="1790312598806"></span></div></div>
-<div class="card e-verde" data-uso="propio" data-est="verde"><span class="chip">AL DÍA</span><span class="usotag">propio</span><div class="name">MCU Timeline</div><div class="desc">Línea de tiempo cronológica y narrativa del universo cinematográfico de Marvel, en español e inglés.</div><ul class="facts"><li>Desplegado el 2 sep en producción, igual al último commit.</li><li>Último commit el 2 sep.</li></ul><div class="meta">Next.js 16 · Tailwind 4<br>GitHub · último commit <span class="rel" data-ts="1788403628000"></span></div></div>
-<div class="card e-verde" data-uso="propio" data-est="verde"><span class="chip">AL DÍA</span><span class="usotag">propio</span><div class="name">Jarvis UI</div><div class="desc">Interfaz web del asistente Jarvis.</div><ul class="facts"><li>Último commit el 21 ago.</li></ul><div class="meta">Next.js 16 · Tailwind 4<br>local · último commit <span class="rel" data-ts="1787341592000"></span></div></div>
-<div class="card e-gris" data-uso="propio" data-est="gris"><span class="chip">DORMIDO</span><span class="usotag">propio</span><div class="name">S.S.S. Relay</div><div class="desc">Servidor WebSocket que conecta los agentes locales con el backend y despacha los escaneos.</div><ul class="facts"><li>Sin commits desde el 2 jul.</li></ul><div class="meta">Node · WebSocket · Fly.io<br>GitHub · último commit <span class="rel" data-ts="1783051073000"></span></div></div>
-<div class="card e-gris" data-uso="propio" data-est="gris"><span class="chip">DORMIDO</span><span class="usotag">propio</span><div class="name">Productivity OS</div><div class="desc">Aplicación de productividad personal desplegada en Vercel.</div><ul class="facts"><li>Producción responde 200 en 1426 ms.</li><li>Desplegado el 2 jul en producción, igual al último commit.</li><li>Sin commits desde el 2 jul.</li></ul><div class="meta">Next.js 15 · Supabase · Vercel<br>productivity-os-beryl.vercel.app · GitHub · último commit <span class="rel" data-ts="1783050719000"></span></div></div>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Escritorio</title>
+<link rel="stylesheet" href="os/os.css">
+</head><body>
+<div class="wrap">
+
+  <div class="top clear">
+    <div class="l">
+      <div class="hello" id="hello">Hola</div>
+      <div class="sub" id="sub"></div>
+    </div>
+    <div class="r">
+      <div id="clock">--:--</div>
+      <div id="today"></div>
+    </div>
+  </div>
+
+  <div id="warn"></div>
+
+  <div id="proy" class="card k-blue">
+    <div class="ch">
+      <div class="badge b-blue"><svg class="ic" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+      <h2>Proyectos</h2>
+      <a class="open" href="proyectos/">Abrir el panel completo &#8250;</a>
+    </div>
+    <div id="proy-body"><div class="empty">Cargando el estado de los proyectos...</div></div>
+  </div>
+
+  <div class="cols clear">
+
+    <div class="col" id="c1">
+      <div class="card k-green">
+        <div class="ch">
+          <div class="badge b-green"><svg class="ic" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></div>
+          <h2>Tareas</h2>
+          <span class="ex" id="t-ex"></span>
+        </div>
+        <form id="t-form" class="addrow" autocomplete="off">
+          <input class="field" id="t-in" type="text" placeholder="Nueva tarea" maxlength="200">
+          <button class="go" type="submit" aria-label="Agregar tarea">+</button>
+        </form>
+        <div class="prog"><div class="bar"><i id="t-bar"></i></div><span id="t-count"></span></div>
+        <ul id="tasks-list"></ul>
+        <div class="tfoot"><button class="btn sm" id="t-clear" type="button">Limpiar hechas</button></div>
+      </div>
+
+      <div class="card k-rose">
+        <div class="ch">
+          <div class="badge b-rose"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg></div>
+          <h2>Enfoque</h2>
+        </div>
+        <div class="pomo">
+          <div class="flash" id="p-flash"></div>
+          <div class="modes" id="p-modes"></div>
+          <div class="ring">
+            <svg width="170" height="170" viewBox="0 0 170 170">
+              <circle cx="85" cy="85" r="74" fill="none" stroke="#0f1116" stroke-width="12"/>
+              <circle id="p-arc" cx="85" cy="85" r="74" fill="none" stroke="#ff6f8d" stroke-width="12" stroke-linecap="round" stroke-dasharray="465" stroke-dashoffset="0" transform="rotate(-90 85 85)"/>
+            </svg>
+            <div class="tm" id="p-time">25:00</div>
+            <div class="st" id="p-state">Foco</div>
+          </div>
+          <button class="btn ok" id="p-go" type="button">Iniciar</button>
+          <button class="btn" id="p-reset" type="button">Reiniciar</button>
+          <div class="pdone" id="p-done"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col" id="c2">
+      <div class="card k-violet">
+        <div class="ch">
+          <div class="badge b-violet"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></div>
+          <h2>Calendario</h2>
+          <button class="btn sm" id="cal-today" type="button" style="float:right;margin-top:1px">Hoy</button>
+        </div>
+        <div class="cal-nav clear"><button class="nv" id="cal-prev" type="button" aria-label="Mes anterior">&#8249;</button><button class="nv n" id="cal-next" type="button" aria-label="Mes siguiente">&#8250;</button><div class="ttl" id="cal-ttl"></div></div>
+        <table class="cal" id="cal"></table>
+        <div class="day">
+          <h3 id="day-ttl"></h3>
+          <div id="day-list"></div>
+          <form id="e-form" class="addrow" autocomplete="off">
+            <input class="field" id="e-in" type="text" placeholder="Nuevo evento este día" maxlength="160">
+            <button class="go" type="submit" aria-label="Agregar evento">+</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card k-cyan">
+        <div class="ch">
+          <div class="badge b-cyan"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></div>
+          <h2>Marcadores</h2>
+        </div>
+        <div class="marks clear" id="marks"></div>
+        <div class="mform" id="m-form-box" style="display:none">
+          <form id="m-form" autocomplete="off">
+            <input class="field" id="m-n" type="text" placeholder="Nombre" maxlength="40">
+            <input class="field" id="m-u" type="text" placeholder="Dirección, por ejemplo github.com" maxlength="300">
+            <button class="btn pri sm" type="submit">Guardar marcador</button>
+          </form>
+        </div>
+        <div class="mtools">
+          <button class="btn sm" id="m-add" type="button">+ Agregar</button>
+          <button class="btn sm" id="m-edit" type="button">Editar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col" id="c3">
+      <div class="card k-amber">
+        <div class="ch">
+          <div class="badge b-amber"><svg class="ic" viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M9 12h6M9 16h6"/></svg></div>
+          <h2>Notas</h2>
+        </div>
+        <div class="nchips" id="n-chips"></div>
+        <textarea class="field" id="note-text" placeholder="Escribe aquí. Se guarda solo."></textarea>
+        <div class="nfoot clear"><span id="n-info"></span><button class="btn sm warn" id="n-del" type="button">Borrar nota</button></div>
+      </div>
+
+      <div class="card k-blue">
+        <div class="ch">
+          <div class="badge b-blue"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></div>
+          <h2>Sistema</h2>
+        </div>
+        <div class="empty" id="sys-info" style="padding-top:0;text-align:left"></div>
+        <div class="foot" style="text-align:left;padding:0">
+          <button id="open-backup" type="button" style="margin-left:0">Respaldo</button><a href="prueba/">Probar conexiones</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
-<div class="foot">Rojo: algo no funciona. Ámbar: trabajo sin subir o desfasado. Verde: al día. Gris: sin actividad en 90 días. Se genera desde git, GitHub, despliegues y las propias URL.</div>
-</div><script>
-(function () {
-  var state = { uso: 'todos', est: 'todos' };
-  function el(id) { return document.getElementById(id); }
-  function parseHash() {
-    var h = (location.hash || '').replace('#', '');
-    if (!h) return;
-    var parts = h.split('&');
-    for (var i = 0; i < parts.length; i++) {
-      var kv = parts[i].split('=');
-      if (kv[0] === 'uso' || kv[0] === 'est') state[kv[0]] = kv[1] || 'todos';
-    }
-  }
-  function apply() {
-    var cards = document.getElementsByClassName('card');
-    var shown = 0, i;
-    for (i = 0; i < cards.length; i++) {
-      var c = cards[i];
-      var ok = (state.uso === 'todos' || c.getAttribute('data-uso') === state.uso) &&
-               (state.est === 'todos' || c.getAttribute('data-est') === state.est);
-      c.style.display = ok ? '' : 'none';
-      if (ok) shown++;
-    }
-    var btns = document.getElementsByClassName('btn');
-    for (i = 0; i < btns.length; i++) {
-      var b = btns[i];
-      b.className = 'btn' + (state[b.getAttribute('data-g')] === b.getAttribute('data-v') ? ' on' : '');
-    }
-    el('shown').innerHTML = shown;
-    try { location.replace('#uso=' + state.uso + '&est=' + state.est); } catch (e) {}
-  }
-  document.onclick = function (e) {
-    e = e || window.event;
-    var t = e.target || e.srcElement;
-    while (t && t.getAttribute && !t.getAttribute('data-g')) t = t.parentNode;
-    if (t && t.getAttribute && t.getAttribute('data-g')) {
-      state[t.getAttribute('data-g')] = t.getAttribute('data-v');
-      apply();
-      if (e.preventDefault) e.preventDefault(); else e.returnValue = false;
-      return false;
-    }
-  };
-  function two(n) { return n < 10 ? '0' + n : '' + n; }
-  function ago(ms) {
-    var m = Math.round((new Date().getTime() - ms) / 60000);
-    if (m < 2) return 'hace un momento';
-    if (m < 60) return 'hace ' + m + ' min';
-    var h = Math.round(m / 60);
-    if (m < 1440) return 'hace ' + h + (h === 1 ? ' hora' : ' horas');
-    var d = Math.round(m / 1440);
-    if (d < 60) return 'hace ' + d + (d === 1 ? ' día' : ' días');
-    var mo = Math.round(d / 30);
-    return 'hace ' + mo + (mo === 1 ? ' mes' : ' meses');
-  }
-  function tick() {
-    var d = new Date();
-    el('clock').innerHTML = two(d.getHours()) + ':' + two(d.getMinutes());
-    var ts = parseInt(el('gen').getAttribute('data-ts'), 10);
-    var m = Math.round((d.getTime() - ts) / 60000);
-    el('age').innerHTML = 'actualizado ' + ago(ts);
-    el('age').className = m > 720 ? 'stale' : '';
-    el('stalewarn').style.display = m > 720 ? 'block' : 'none';
-    var rels = document.getElementsByClassName('rel');
-    for (var i = 0; i < rels.length; i++) {
-      var v = parseInt(rels[i].getAttribute('data-ts'), 10);
-      if (v) rels[i].innerHTML = ago(v);
-    }
-  }
-  parseHash(); apply(); tick();
-  setInterval(tick, 20000);
-})();
-</script></body></html>
+
+<div id="toast"><span id="toast-t"></span><button class="btn sm pri" id="toast-b" type="button">Deshacer</button></div>
+
+<div id="modal"><div class="box">
+  <h2>Respaldo de tus datos</h2>
+  <p>Todo lo que escribes aquí vive solo en esta tablet. Cada día se guarda una copia automática (las últimas 7). Si Internet Explorer borra el historial con los datos de sitios, también se borrarían las copias, así que de vez en cuando copia el texto de abajo a un lugar seguro.</p>
+  <h3>Copias automáticas</h3>
+  <div id="bk-list"></div>
+  <h3>Exportar</h3>
+  <textarea class="field" id="bk-out" readonly></textarea>
+  <div class="mrow"><button class="btn sm" id="bk-copy" type="button">Copiar todo</button></div>
+  <h3>Importar</h3>
+  <textarea class="field" id="bk-in" placeholder="Pega aquí el texto exportado"></textarea>
+  <div class="mrow"><button class="btn sm warn" id="bk-import" type="button">Importar y reemplazar</button></div>
+  <div class="mrow"><button class="btn pri" id="bk-close" type="button">Cerrar</button></div>
+</div></div>
+
+<noscript><div style="padding:20px;color:#fff">Esta página necesita JavaScript.</div></noscript>
+<script src="os/os.js"></script>
+</body></html>
