@@ -6,79 +6,56 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Escritorio</title>
 <link rel="stylesheet" href="os/os.css">
+<style id="theme-css"></style>
 </head><body>
-<div class="wrap">
 
-  <div class="top clear">
-    <div class="l">
-      <div class="hello" id="hello">Hola</div>
-      <div class="sub" id="sub"></div>
-    </div>
-    <div class="r">
-      <div id="clock">--:--</div>
-      <div id="today"></div>
-    </div>
+<div class="topbar"><div class="in clear">
+  <a class="brand" href="#/"><span class="logo"></span>Escritorio</a>
+  <div class="tr">
+    <button class="tbtn" id="btn-edit" type="button">Editar diseño</button>
+    <button class="tbtn" id="btn-custom" type="button">Personalizar</button>
+    <div class="clk"><b id="clock">--:--</b><span id="today"></span></div>
+  </div>
+</div></div>
+
+<div class="wrap">
+ <div id="main">
+  <div class="ph">
+    <div class="kick">RESUMEN</div>
+    <h1 id="hello">Hola</h1>
   </div>
 
   <div id="warn"></div>
 
-  <div id="proy" class="card k-blue">
-    <div class="ch">
-      <div class="badge b-blue"><svg class="ic" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
-      <h2>Proyectos</h2>
-      <a class="open" href="proyectos/">Abrir el panel completo &#8250;</a>
-    </div>
-    <div id="proy-body"><div class="empty">Cargando el estado de los proyectos...</div></div>
+  <div id="editbar" class="clear">
+    <div class="et"><b>Modo edición.</b> Arrastra cada tarjeta por su barra superior o usa las flechas. Cambia el tamaño con − y +.</div>
+    <div class="er"><span id="hidden-list"></span><button class="btn sm" id="btn-reset" type="button">Restablecer</button> <button class="btn sm pri" id="btn-done" type="button">Listo</button></div>
   </div>
 
-  <div class="cols clear">
+  <div class="row" id="grid">
 
-    <div class="col" id="c1">
-      <div class="card k-green">
-        <div class="ch">
-          <div class="badge b-green"><svg class="ic" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></div>
-          <h2>Tareas</h2>
-          <span class="ex" id="t-ex"></span>
-        </div>
-        <form id="t-form" class="addrow" autocomplete="off">
-          <input class="field" id="t-in" type="text" placeholder="Nueva tarea" maxlength="200">
-          <button class="go" type="submit" aria-label="Agregar tarea">+</button>
-        </form>
-        <div class="prog"><div class="bar"><i id="t-bar"></i></div><span id="t-count"></span></div>
-        <ul id="tasks-list"></ul>
-        <div class="tfoot"><button class="btn sm" id="t-clear" type="button">Limpiar hechas</button></div>
-      </div>
-
-      <div class="card k-rose">
-        <div class="ch">
-          <div class="badge b-rose"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg></div>
-          <h2>Enfoque</h2>
-        </div>
-        <div class="pomo">
-          <div class="flash" id="p-flash"></div>
-          <div class="modes" id="p-modes"></div>
-          <div class="ring">
-            <svg width="170" height="170" viewBox="0 0 170 170">
-              <circle cx="85" cy="85" r="74" fill="none" stroke="#0f1116" stroke-width="12"/>
-              <circle id="p-arc" cx="85" cy="85" r="74" fill="none" stroke="#ff6f8d" stroke-width="12" stroke-linecap="round" stroke-dasharray="465" stroke-dashoffset="0" transform="rotate(-90 85 85)"/>
-            </svg>
-            <div class="tm" id="p-time">25:00</div>
-            <div class="st" id="p-state">Foco</div>
-          </div>
-          <button class="btn ok" id="p-go" type="button">Iniciar</button>
-          <button class="btn" id="p-reset" type="button">Reiniciar</button>
-          <div class="pdone" id="p-done"></div>
-        </div>
-      </div>
+    <div class="card kpi k-red link s3" data-w="kfail" data-title="Proyectos en fallo" data-go="proyectos/">
+      <div class="cb"><div class="kl">PROYECTOS EN FALLO</div><div class="kn" id="k1n">-</div><div class="kc" id="k1c"></div><div class="kbar"><i id="k1b"></i></div></div>
+    </div>
+    <div class="card kpi k-amber link s3" data-w="kpend" data-title="Proyectos pendientes" data-go="proyectos/">
+      <div class="cb"><div class="kl">PROYECTOS PENDIENTES</div><div class="kn" id="k2n">-</div><div class="kc" id="k2c"></div><div class="kbar"><i id="k2b"></i></div></div>
+    </div>
+    <div class="card kpi k-green link s3" data-w="ktask" data-title="Tareas pendientes" data-go="#/tareas">
+      <div class="cb"><div class="kl">TAREAS PENDIENTES</div><div class="kn" id="k3n">0</div><div class="kc" id="k3c"></div><div class="kbar"><i id="k3b"></i></div></div>
+    </div>
+    <div class="card kpi k-blue link s3" data-w="kfoc" data-title="Enfoque de hoy" data-go="#/enfoque">
+      <div class="cb"><div class="kl">ENFOQUE DE HOY</div><div class="kn" id="k4n">0</div><div class="kc" id="k4c"></div><div class="kbar"><i id="k4b"></i></div></div>
     </div>
 
-    <div class="col" id="c2">
-      <div class="card k-violet">
-        <div class="ch">
-          <div class="badge b-violet"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></div>
-          <h2>Calendario</h2>
-          <button class="btn sm" id="cal-today" type="button" style="float:right;margin-top:1px">Hoy</button>
-        </div>
+    <div class="card s8" data-w="proy" data-title="Proyectos" id="proy">
+      <div class="ch" data-go="proyectos/"><svg class="ic" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><h2>Proyectos</h2><a class="ex" href="proyectos/">Ver todo &#8250;</a></div>
+      <div class="cb" id="proy-body"><div class="empty">Cargando el estado de los proyectos...</div></div>
+      <div class="cf" id="proy-foot"></div>
+    </div>
+
+    <div class="card s4" data-w="cal" data-title="Calendario">
+      <div class="ch" data-go="#/calendario"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><h2>Calendario</h2><a class="ex" href="#/calendario">Ver todo &#8250;</a></div>
+      <div class="cb">
         <div class="cal-nav clear"><button class="nv" id="cal-prev" type="button" aria-label="Mes anterior">&#8249;</button><button class="nv n" id="cal-next" type="button" aria-label="Mes siguiente">&#8250;</button><div class="ttl" id="cal-ttl"></div></div>
         <table class="cal" id="cal"></table>
         <div class="day">
@@ -90,56 +67,91 @@
           </form>
         </div>
       </div>
+    </div>
 
-      <div class="card k-cyan">
-        <div class="ch">
-          <div class="badge b-cyan"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></div>
-          <h2>Marcadores</h2>
-        </div>
-        <div class="marks clear" id="marks"></div>
-        <div class="mform" id="m-form-box" style="display:none">
-          <form id="m-form" autocomplete="off">
-            <input class="field" id="m-n" type="text" placeholder="Nombre" maxlength="40">
-            <input class="field" id="m-u" type="text" placeholder="Dirección, por ejemplo github.com" maxlength="300">
-            <button class="btn pri sm" type="submit">Guardar marcador</button>
-          </form>
-        </div>
-        <div class="mtools">
-          <button class="btn sm" id="m-add" type="button">+ Agregar</button>
-          <button class="btn sm" id="m-edit" type="button">Editar</button>
-        </div>
+    <div class="card s4" data-w="tasks" data-title="Tareas">
+      <div class="ch" data-go="#/tareas"><svg class="ic" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg><h2>Tareas</h2><a class="ex" href="#/tareas">Ver todo &#8250;</a></div>
+      <div class="cb">
+        <form id="t-form" class="addrow" autocomplete="off">
+          <input class="field" id="t-in" type="text" placeholder="Nueva tarea" maxlength="200">
+          <button class="go" type="submit" aria-label="Agregar tarea">+</button>
+        </form>
+        <div class="prog"><div class="bar"><i id="t-bar"></i></div><span id="t-count"></span></div>
+        <ul id="tasks-list"></ul>
+        <div class="tfoot"><button class="btn sm" id="t-clear" type="button">Limpiar hechas</button></div>
       </div>
     </div>
 
-    <div class="col" id="c3">
-      <div class="card k-amber">
-        <div class="ch">
-          <div class="badge b-amber"><svg class="ic" viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M9 12h6M9 16h6"/></svg></div>
-          <h2>Notas</h2>
-        </div>
+    <div class="card s4" data-w="work" data-title="Trabajo" id="work">
+      <div class="ch" data-go="#/trabajo"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16v12H4z"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M4 13h16"/></svg><h2>Trabajo</h2><a class="ex" href="#/trabajo">Ver todo &#8250;</a></div>
+      <div class="cb" id="work-body"><div class="empty">Sin datos todavía.</div></div>
+      <div class="cf" id="work-foot"></div>
+    </div>
+
+    <div class="card s4" data-w="notes" data-title="Notas">
+      <div class="ch" data-go="#/notas"><svg class="ic" viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M9 12h6M9 16h6"/></svg><h2>Notas</h2><a class="ex" href="#/notas">Ver todo &#8250;</a></div>
+      <div class="cb">
         <div class="nchips" id="n-chips"></div>
         <textarea class="field" id="note-text" placeholder="Escribe aquí. Se guarda solo."></textarea>
         <div class="nfoot clear"><span id="n-info"></span><button class="btn sm warn" id="n-del" type="button">Borrar nota</button></div>
       </div>
+    </div>
 
-      <div class="card k-blue">
-        <div class="ch">
-          <div class="badge b-blue"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></div>
-          <h2>Sistema</h2>
+    <div class="card s4" data-w="pomo" data-title="Enfoque">
+      <div class="ch" data-go="#/enfoque"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg><h2>Enfoque</h2><a class="ex" href="#/enfoque">Ver todo &#8250;</a></div>
+      <div class="cb pomo">
+        <div class="flash" id="p-flash"></div>
+        <div class="modes" id="p-modes"></div>
+        <div class="ring">
+          <svg width="150" height="150" viewBox="0 0 150 150">
+            <circle id="p-track" cx="75" cy="75" r="66" fill="none" stroke="#0f1115" stroke-width="8"/>
+            <circle id="p-arc" cx="75" cy="75" r="66" fill="none" stroke="#3b82f6" stroke-width="8" stroke-linecap="round" stroke-dasharray="415" stroke-dashoffset="0" transform="rotate(-90 75 75)"/>
+          </svg>
+          <div class="tm" id="p-time">25:00</div>
+          <div class="st" id="p-state">FOCO</div>
         </div>
-        <div class="empty" id="sys-info" style="padding-top:0;text-align:left"></div>
-        <div class="foot" style="text-align:left;padding:0">
-          <button id="open-backup" type="button" style="margin-left:0">Respaldo</button><a href="prueba/">Probar conexiones</a>
-        </div>
+        <button class="btn ok" id="p-go" type="button">Iniciar</button>
+        <button class="btn" id="p-reset" type="button">Reiniciar</button>
+        <div class="pdone" id="p-done"></div>
+      </div>
+    </div>
+
+    <div class="card s8" data-w="marks" data-title="Marcadores">
+      <div class="ch" data-go="#/marcadores"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg><h2>Marcadores</h2><a class="ex" href="#/marcadores">Ver todo &#8250;</a></div>
+      <div class="cb">
+        <div class="marks clear" id="marks"></div>
       </div>
     </div>
 
   </div>
+
+  <div class="foot" id="sys-info"></div>
+ </div>
+
+ <div id="view"></div>
 </div>
 
 <div id="toast"><span id="toast-t"></span><button class="btn sm pri" id="toast-b" type="button">Deshacer</button></div>
 
-<div id="modal"><div class="box">
+<div id="modal-custom" class="modal"><div class="box">
+  <h2>Personalizar</h2>
+  <p>Los cambios se aplican al momento y se guardan en esta tablet.</p>
+  <h3>Tema</h3>
+  <div class="seg" id="seg-theme"></div>
+  <h3>Color de acento</h3>
+  <div class="sw" id="sw-accent"></div>
+  <h3>Tamaño de la interfaz</h3>
+  <div class="seg" id="seg-scale"></div>
+  <h3>Widgets visibles</h3>
+  <div class="tg" id="tg-widgets"></div>
+  <h3>Diseño</h3>
+  <div class="mrow l"><button class="btn sm" id="c-edit" type="button">Editar diseño</button> <button class="btn sm" id="c-reset" type="button">Restablecer diseño</button></div>
+  <h3>Datos</h3>
+  <div class="mrow l"><button class="btn sm" id="open-backup" type="button">Respaldo</button> <a class="btn sm" href="prueba/">Probar conexiones</a></div>
+  <div class="mrow"><button class="btn pri" id="c-close" type="button">Cerrar</button></div>
+</div></div>
+
+<div id="modal" class="modal"><div class="box">
   <h2>Respaldo de tus datos</h2>
   <p>Todo lo que escribes aquí vive solo en esta tablet. Cada día se guarda una copia automática (las últimas 7). Si Internet Explorer borra el historial con los datos de sitios, también se borrarían las copias, así que de vez en cuando copia el texto de abajo a un lugar seguro.</p>
   <h3>Copias automáticas</h3>
