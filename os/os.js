@@ -9,7 +9,9 @@
 
   var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
   var DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
-  var KEYS = ['tasks', 'notes', 'marks', 'events', 'pomo', 'prefs'];
+  var KEYS = ['tasks', 'notes', 'marks', 'events', 'pomo', 'prefs', 'unidone'];
+  /* Servicio que lee el iCal de Blackboard (Worker de Cloudflare, ver ~/ics-proxy). Vacío hasta que se despliegue. */
+  var UNI_API = '';
   var MARK_COLORS = ['#3b82f6', '#22a36b', '#8b5cf6', '#d98a1c', '#d6457f', '#12a3bd'];
   var ACCENTS = { azul: '#3b82f6', verde: '#22b36b', violeta: '#8b5cf6', ambar: '#f59e0b', rosa: '#ec4899', cian: '#06b6d4' };
   var ACCENT_NAMES = { azul: 'Azul', verde: 'Verde', violeta: 'Violeta', ambar: 'Ámbar', rosa: 'Rosa', cian: 'Cian' };
@@ -118,6 +120,15 @@
   var taskFilter = 'todas';
   var noteArea = $('note-text');
   var noteQuery = '';
+  /* Universidad: el enlace del iCal se pega UNA vez y queda en esta tablet (clave rtos.uni). NO forma parte de KEYS,
+     así que nunca sale en el respaldo exportado, y nunca se escribe en la página, la URL ni el repositorio. */
+  var uniLink = load('uni', null);
+  var uniData = load('unidata', null);
+  var uniDone = load('unidone', {});
+  var uniMsg = '';
+  var uniLoading = false;
+  var uniFilter = 'proximas';
+  var uniChange = false;
 
   /* ---------- copia de seguridad automática y manual ---------- */
   function allData() { var o = {}, i; for (i = 0; i < KEYS.length; i++) { o[KEYS[i]] = load(KEYS[i], null); } return o; }
@@ -819,6 +830,114 @@
   });
   on($('p-reset'), 'click', function () { pomo.left = MODES[pomo.mode].t; pomo.end = null; savePomo(); renderPomo(); });
 
+  /* ---------- universidad (tareas de Blackboard) ---------- */
+  function fmtDue(d) {
+    var h = d.getHours(), m = d.getMinutes(), ap = h >= 12 ? 'p. m.' : 'a. m.';
+    h = h % 12; if (h === 0) h = 12;
+    return DIAS[d.getDay()].slice(0, 3) + ' ' + d.getDate() + ' ' + MESES[d.getMonth()].slice(0, 3) + ', ' + h + ':' + two(m) + ' ' + ap;
+  }
+  function dueInfo(iso) {
+    var d = new Date(iso), now = new Date();
+    var a = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(), b = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    var diff = Math.round((a - b) / 864e5);
+    if (d.getTime() < now.getTime()) return { txt: 'VENCIDA', cls: 'c-rojo', diff: diff, late: true };
+    if (diff === 0) return { txt: 'HOY', cls: 'c-rojo', diff: 0 };
+    if (diff === 1) return { txt: 'MAÑANA', cls: 'c-ambar', diff: 1 };
+    if (diff <= 3) return { txt: diff + ' DÍAS', cls: 'c-ambar', diff: diff };
+    return { txt: diff + ' DÍAS', cls: 'c-azul', diff: diff };
+  }
+  function uniItems(filter) {
+    var out = [], i, it, all = uniData && uniData.items ? uniData.items : [], now = new Date().getTime();
+    for (i = 0; i < all.length; i++) {
+      it = all[i];
+      var done = !!uniDone[it.id], late = new Date(it.d).getTime() < now;
+      if (filter === 'hechas') { if (done) out.push(it); }
+      else if (filter === 'proximas') { if (!done && !late) out.push(it); }
+      else if (filter === 'vencidas') { if (!done && late) out.push(it); }
+      else out.push(it);
+    }
+    return out;
+  }
+  function uniHost() {
+    try { var m = /^https?:\/\/([^\/?#]+)/i.exec(uniLink || ''); return m ? m[1] : ''; } catch (e) { return ''; }
+  }
+  function uniChanged() { renderUni(); if (curView === 'universidad') rerenderView(); }
+  function fetchUni() {
+    if (!uniLink || uniLoading) return;
+    if (!UNI_API) { uniMsg = 'El enlace ya quedó guardado. El servicio que lee Blackboard todavía no está activo.'; uniChanged(); return; }
+    uniLoading = true; uniMsg = '';
+    var x = new XMLHttpRequest();
+    x.open('POST', UNI_API, true);
+    x.timeout = 25000;
+    x.setRequestHeader('Content-Type', 'text/plain');
+    function end(msg) { uniLoading = false; if (msg !== null) uniMsg = msg; uniChanged(); }
+    x.onload = function () {
+      var j2 = null;
+      try { j2 = JSON.parse(x.responseText); } catch (e) { }
+      if (x.status === 200 && j2 && j2.items) { uniData = { ts: j2.ts, items: j2.items }; save('unidata', uniData); end(''); }
+      else end((j2 && j2.error) ? j2.error : 'El servicio respondió con un error (' + x.status + ').');
+    };
+    x.onerror = function () { end('No se pudo conectar con el servicio. Se muestra lo último guardado.'); };
+    x.ontimeout = function () { end('El servicio tardó demasiado. Se muestra lo último guardado.'); };
+    try { x.send(uniLink); } catch (e) { end('No se pudo conectar con el servicio.'); }
+  }
+  function refreshUni(force) {
+    if (!uniLink) return;
+    var old = uniData && uniData.ts ? new Date().getTime() - uniData.ts : 1e12;
+    if (force || old > 20 * 60000) fetchUni();
+  }
+  function saveUniLink(v) {
+    v = trim(v);
+    if (!/^https:\/\/[^\s\/]+\/\S*$/i.test(v)) { toast('Pega el enlace completo del calendario, que empieza con https://', null); return false; }
+    uniLink = v; save('uni', v); uniData = null; removeKey('unidata'); uniChange = false; uniMsg = '';
+    uniChanged(); fetchUni();
+    return true;
+  }
+  function removeUniLink() {
+    uniLink = null; removeKey('uni'); uniData = null; removeKey('unidata'); uniMsg = ''; uniChange = false;
+    uniChanged();
+    toast('Enlace de Blackboard quitado de esta tablet', null);
+  }
+  function uniForm(onSave) {
+    var f = mk('form', 'unif'), inp = mk('input', 'field'), b = mk('button', 'btn pri', 'Guardar enlace');
+    inp.type = 'text'; inp.setAttribute('placeholder', 'Pega aquí el enlace iCal de Blackboard'); inp.setAttribute('autocomplete', 'off'); inp.setAttribute('spellcheck', 'false'); inp.setAttribute('maxlength', '2000');
+    b.type = 'submit';
+    on(f, 'submit', function (e) { e = e || window.event; stop(e); var v = inp.value; if (saveUniLink(v)) { inp.value = ''; if (onSave) onSave(); } });
+    f.appendChild(inp); f.appendChild(b);
+    return f;
+  }
+  function uniNote() {
+    var n = mk('div', 'note');
+    n.appendChild(mk('b', null, 'Se guarda solo en esta tablet. '));
+    n.appendChild(document.createTextNode('No se publica en ningún sitio ni aparece en el respaldo. Solo se envía a tu propio servicio para leer las tareas y no se almacena allí.'));
+    return n;
+  }
+  function renderUni() {
+    var box = $('uni-body'), foot = $('uni-foot'), items, i, row, chip, tx, di;
+    if (!box) return;
+    clearNode(box); foot.innerHTML = '';
+    if (!uniLink) {
+      box.appendChild(mk('div', 'hint', 'Conecta tu calendario de Blackboard para ver aquí las entregas. Se pega una sola vez.'));
+      box.appendChild(uniForm(null)); box.appendChild(uniNote());
+      return;
+    }
+    if (uniMsg) box.appendChild(mk('div', 'stat', uniMsg));
+    items = uniItems('proximas');
+    if (!uniData) box.appendChild(mk('div', 'empty', uniLoading ? 'Leyendo Blackboard...' : 'Todavía no hay datos.'));
+    else if (!items.length) box.appendChild(mk('div', 'allok', 'Sin entregas próximas.'));
+    for (i = 0; i < items.length && i < 5; i++) {
+      di = dueInfo(items[i].d);
+      row = mk('div', 'al wk clear'); chip = mk('div', 'chip ' + di.cls, di.txt); tx = mk('div', 'txt');
+      tx.appendChild(mk('div', 'nm', items[i].t));
+      tx.appendChild(mk('div', 'ft', (items[i].c ? items[i].c + ' · ' : '') + fmtDue(new Date(items[i].d))));
+      row.appendChild(chip); row.appendChild(tx);
+      on(row, 'click', function () { goTo('#/universidad'); });
+      box.appendChild(row);
+    }
+    if (items.length > 5) box.appendChild(mk('div', 'more', '+ ' + (items.length - 5) + ' más'));
+    foot.appendChild(document.createTextNode(uniData && uniData.ts ? 'Actualizado ' + ago(uniData.ts) : (uniLoading ? 'Actualizando...' : '')));
+  }
+
   /* ---------- vistas de detalle (cada widget por dentro) ---------- */
   var viewEl = $('view'), mainEl = $('main'), curView = null;
   var VIEWS = {};
@@ -1089,6 +1208,61 @@
     }
   };
 
+  /* universidad */
+  VIEWS.universidad = {
+    title: 'Universidad',
+    render: function (root) {
+      var row, i, all = uniData && uniData.items ? uniData.items : [], now = new Date().getTime();
+      var prox = uniItems('proximas'), late = uniItems('vencidas'), done = uniItems('hechas'), week = 0;
+      for (i = 0; i < prox.length; i++) { if (new Date(prox[i].d).getTime() - now < 7 * 864e5) week++; }
+      root.appendChild(vHead('Universidad', 'DETALLE', uniLink ? (uniData && uniData.ts ? 'Entregas de Blackboard, actualizadas ' + ago(uniData.ts) : 'Entregas de Blackboard') : 'Conecta tu calendario de Blackboard'));
+      if (!uniLink) {
+        row = mk('div', 'row');
+        var c0 = vCard('s6', 'Conectar Blackboard', null);
+        c0.body.appendChild(mk('div', 'hint', 'En Blackboard abre el calendario y copia el enlace iCal de tu cuenta, el mismo que usas en Active Calendar. Pégalo aquí una sola vez.'));
+        c0.body.appendChild(uniForm(null)); c0.body.appendChild(uniNote());
+        row.appendChild(c0.card); root.appendChild(row);
+        return;
+      }
+      row = mk('div', 'row');
+      row.appendChild(vStat('PRÓXIMAS', prox.length, 'entregas pendientes', 'k-blue', all.length ? prox.length * 100 / all.length : 0));
+      row.appendChild(vStat('ESTA SEMANA', week, 'vencen en 7 días', week ? 'k-amber' : 'k-green', prox.length ? week * 100 / prox.length : 0));
+      row.appendChild(vStat('VENCIDAS', late.length, 'sin marcar como hechas', late.length ? 'k-red' : 'k-green', all.length ? late.length * 100 / all.length : 0));
+      row.appendChild(vStat('HECHAS', done.length, 'marcadas aquí', 'k-green', all.length ? done.length * 100 / all.length : 0));
+      root.appendChild(row);
+      row = mk('div', 'row');
+      var c1 = vCard('s8', 'Entregas', null), fb = mk('div', 'seg'), list = uniItems(uniFilter), it, ur, chk, di, tx;
+      seg(fb, [['proximas', 'Próximas'], ['vencidas', 'Vencidas'], ['hechas', 'Hechas'], ['todas', 'Todas']], uniFilter, function (v) { uniFilter = v; rerenderView(); });
+      c1.body.appendChild(fb); c1.body.appendChild(mk('div', 'gap8'));
+      if (uniMsg) c1.body.appendChild(mk('div', 'stat', uniMsg));
+      if (!list.length) c1.body.appendChild(mk('div', 'empty', uniData ? 'No hay entregas en esta lista.' : (uniLoading ? 'Leyendo Blackboard...' : 'Todavía no hay datos.')));
+      for (i = 0; i < list.length; i++) {
+        (function (t) {
+          di = dueInfo(t.d);
+          ur = mk('div', 'ur clear' + (uniDone[t.id] ? ' done' : '')); chk = mk('button', 'chk'); chk.type = 'button'; chk.innerHTML = CHECK;
+          chk.setAttribute('aria-label', uniDone[t.id] ? 'Marcar como pendiente' : 'Marcar como hecha');
+          on(chk, 'click', function () { if (uniDone[t.id]) delete uniDone[t.id]; else uniDone[t.id] = true; save('unidone', uniDone); rerenderView(); });
+          ur.appendChild(chk); ur.appendChild(mk('div', 'chip ' + di.cls, uniDone[t.id] ? 'HECHA' : di.txt));
+          tx = mk('div', 'txt'); tx.appendChild(mk('div', 'nm', t.t)); tx.appendChild(mk('div', 'ft', (t.c ? t.c + ' · ' : '') + fmtDue(new Date(t.d))));
+          ur.appendChild(tx); c1.body.appendChild(ur);
+        })(list[i]);
+      }
+      row.appendChild(c1.card);
+      var c2 = vCard('s4', 'Enlace de Blackboard', null), bar = mk('div', 'tfoot'), b1 = mk('button', 'btn sm', uniLoading ? 'Actualizando...' : 'Actualizar ahora'), b2 = mk('button', 'btn sm', 'Cambiar enlace'), b3 = mk('button', 'btn sm warn', 'Quitar enlace');
+      c2.body.appendChild(mk('div', 'hint', 'Guardado en esta tablet' + (uniHost() ? ' (' + uniHost() + ')' : '') + '. No se pega de nuevo al abrir la página.'));
+      b1.type = 'button'; b2.type = 'button'; b3.type = 'button';
+      on(b1, 'click', function () { fetchUni(); });
+      on(b2, 'click', function () { uniChange = !uniChange; rerenderView(); });
+      var armed = false;
+      on(b3, 'click', function () { if (!armed) { armed = true; b3.innerHTML = '¿Seguro? Se quita de esta tablet'; return; } removeUniLink(); });
+      c2.body.appendChild(mk('div', 'gap8')); c2.body.appendChild(b1); c2.body.appendChild(document.createTextNode(' ')); c2.body.appendChild(b2); c2.body.appendChild(document.createTextNode(' ')); c2.body.appendChild(b3);
+      if (uniChange) { c2.body.appendChild(mk('div', 'gap8')); c2.body.appendChild(uniForm(function () { uniChange = false; })); }
+      c2.body.appendChild(uniNote());
+      row.appendChild(c2.card);
+      root.appendChild(row);
+    }
+  };
+
   /* trabajo */
   VIEWS.trabajo = {
     title: 'Trabajo',
@@ -1149,7 +1323,7 @@
     curView = null;
     viewEl.style.display = 'none'; mainEl.style.display = 'block'; clearNode(viewEl);
     document.title = 'Escritorio';
-    renderTasks(); renderCal(); renderDay(); renderNotes(); renderMarks(); renderPomo(); renderProy(); renderWork();
+    renderTasks(); renderCal(); renderDay(); renderNotes(); renderMarks(); renderPomo(); renderProy(); renderWork(); renderUni();
   }
   function showView(name) {
     flushNote();
@@ -1233,9 +1407,11 @@
   renderHead();
   route();
   refreshFeeds();
+  renderUni(); refreshUni(false);
   setInterval(function () { renderHead(); }, 15000);
   setInterval(pomoTick, 1000);
   setInterval(refreshFeeds, 300000);
+  setInterval(function () { refreshUni(false); }, 1800000);
   setInterval(function () { if (!curView) { renderProy(); renderWork(); } }, 60000);
   if (!storeOk) warnStore();
 })();
