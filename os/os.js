@@ -10,8 +10,8 @@
   var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
   var DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
   var KEYS = ['tasks', 'notes', 'marks', 'events', 'pomo', 'prefs', 'unidone'];
-  /* Servicio que lee el iCal de Blackboard (Worker de Cloudflare, ver ~/ics-proxy). Vacío hasta que se despliegue. */
-  var UNI_API = '';
+  /* Servicio que lee el iCal de Blackboard (Worker de Cloudflare, ver ~/ics-proxy). Desplegado el 2026-10-21. */
+  var UNI_API = 'https://ics-proxy.ojimenez6.workers.dev/';
   var MARK_COLORS = ['#3b82f6', '#22a36b', '#8b5cf6', '#d98a1c', '#d6457f', '#12a3bd'];
   var ACCENTS = { azul: '#3b82f6', verde: '#22b36b', violeta: '#8b5cf6', ambar: '#f59e0b', rosa: '#ec4899', cian: '#06b6d4' };
   var ACCENT_NAMES = { azul: 'Azul', verde: 'Verde', violeta: 'Violeta', ambar: 'Ámbar', rosa: 'Rosa', cian: 'Cian' };

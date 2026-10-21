@@ -42,6 +42,7 @@ p{margin:0 0 16px 0;color:#a5a8b2;line-height:1.5;font-size:14px;}
     { n: 'jsDelivr (CDN)', u: 'https://cdn.jsdelivr.net/npm/acorn@8.11.3/package.json', d: 'Archivo público de un CDN' },
     { n: 'Divisas (open.er-api)', u: 'https://open.er-api.com/v6/latest/USD', d: 'Segunda fuente de divisas' },
     { n: 'Cloudflare (Active Calendar)', u: 'https://activecalendar.site/', d: 'Sitio alojado en Cloudflare. Toca abrir directo: si carga, la tablet puede hablar con un Worker de Cloudflare.', link: true },
+    { n: 'Servicio de Blackboard (Cloudflare)', u: 'https://ics-proxy.ojimenez6.workers.dev/', d: 'Envía un POST de prueba. Debe responder que el enlace no es válido: eso prueba cifrado, CORS y POST desde esta tablet.', post: 'prueba', expect: 400 },
     { n: 'Wikipedia (API)', u: 'https://es.wikipedia.org/api/rest_v1/page/summary/Santo_Domingo', d: 'Resumen de un artículo' }
   ];
   var out = document.getElementById('out');
@@ -56,16 +57,17 @@ p{margin:0 0 16px 0;color:#a5a8b2;line-height:1.5;font-size:14px;}
       var t0 = new Date().getTime(), x;
       try {
         x = new XMLHttpRequest();
-        x.open('GET', t.u, true);
+        x.open(t.post ? 'POST' : 'GET', t.u, true);
+        if (t.post) x.setRequestHeader('Content-Type', 'text/plain');
         x.timeout = 20000;
         x.onload = function () {
           var ms = new Date().getTime() - t0;
-          if (x.status >= 200 && x.status < 300) { st.className = 'st ok'; st.innerHTML = 'OK · ' + ms + ' ms'; ds.innerHTML = ''; ds.appendChild(document.createTextNode((x.responseText || '').slice(0, 90))); }
+          if (t.expect ? x.status === t.expect : (x.status >= 200 && x.status < 300)) { st.className = 'st ok'; st.innerHTML = 'OK · ' + ms + ' ms'; ds.innerHTML = ''; ds.appendChild(document.createTextNode((x.responseText || '').slice(0, 90))); }
           else { st.className = 'st no'; st.innerHTML = 'HTTP ' + x.status; }
         };
         x.onerror = function () { st.className = 'st no'; st.innerHTML = 'ERROR'; };
         x.ontimeout = function () { st.className = 'st no'; st.innerHTML = 'SIN RESPUESTA'; };
-        x.send(null);
+        x.send(t.post || null);
       } catch (e) { st.className = 'st no'; st.innerHTML = 'ERROR'; }
     })(TESTS[i]); }
   }
